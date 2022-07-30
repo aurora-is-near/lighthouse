@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 ethereum-types = "0.12.1"
-eth2_hashing = { version = "0.3.0", default-features = false, features = ["zero_hash_cache", "wasm_near"] }
+eth2_hashing = { path = "../eth2_hashing", default-features = false, features = ["zero_hash_cache", "wasm_near"] }
 lazy_static = "1.4.0"
 safe_arith = { path = "../safe_arith" }
 
