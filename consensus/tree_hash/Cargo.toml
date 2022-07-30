@@ -16,7 +16,7 @@ eth2_ssz_derive = "0.3.0"
 
 [dependencies]
 ethereum-types = "0.12.1"
-eth2_hashing = "0.3.0"
+eth2_hashing = { version = "0.3.0", default-features = false, features = ["zero_hash_cache", "wasm_near"] }
 smallvec = "1.6.1"
 
 [features]
