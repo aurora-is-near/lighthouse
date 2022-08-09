@@ -4,7 +4,10 @@ version = "0.3.0"
 authors = ["Aurora <hello@aurora.dev>"]
 edition = "2021"
 license = "Apache-2.0"
-description = "Hashing wrapper over eth2_hasing, for usage in NEAR WASM contracts"
+description = "Reimplemented eth2_hashing using near-sdk, for usage in NEAR WASM contracts"
 
 [dependencies]
-eth2_hashing = { path = "../eth2_hashing", default-features = false, features = ["zero_hash_cache", "wasm_near"] }
+near-sdk = { version = "4.0.0" }
+
+[dev-dependencies]
+rustc-hex = "2.1.0"
