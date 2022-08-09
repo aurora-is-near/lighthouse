@@ -7,8 +7,6 @@
 //! Now this crate serves primarily as a wrapper over two SHA256 crates: `sha2` and `ring` –
 //! which it switches between at runtime based on the availability of SHA intrinsics.
 
-use near_sdk;
-
 #[cfg(feature = "zero_hash_cache")]
 use lazy_static::lazy_static;
 
@@ -23,7 +21,7 @@ pub fn hash(input: &[u8]) -> Vec<u8> {
 /// Hash function returning a fixed-size array (to save on allocations).
 pub fn hash_fixed(input: &[u8]) -> [u8; HASH_LEN] {
     let mut buffer = [0u8; HASH_LEN];
-    buffer.copy_from_slice(&near_sdk::env::sha256(input).as_slice());
+    buffer.copy_from_slice(near_sdk::env::sha256(input).as_slice());
     buffer
 }
 
