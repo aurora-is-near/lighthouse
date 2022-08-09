@@ -1,8 +1,8 @@
 use crate::{get_zero_hash, Hash256, HASHSIZE};
-#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-use eth2_hashing_wasm::{Context, Sha256Context, HASH_LEN};
 #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
 use eth2_hashing::{Context, Sha256Context, HASH_LEN};
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+use eth2_hashing_wasm::{Context, Sha256Context, HASH_LEN};
 use smallvec::{smallvec, SmallVec};
 use std::mem;
 

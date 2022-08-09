@@ -11,10 +11,10 @@
 pub use self::DynamicContext as Context;
 #[cfg(feature = "wasm_near")]
 pub use self::NearSha2Impl as Context;
-#[cfg(not(feature = "wasm_near"))]
-use sha2::Digest;
 #[cfg(feature = "wasm_near")]
 use near_sdk;
+#[cfg(not(feature = "wasm_near"))]
+use sha2::Digest;
 
 #[cfg(feature = "zero_hash_cache")]
 use lazy_static::lazy_static;
@@ -29,7 +29,6 @@ pub fn hash(input: &[u8]) -> Vec<u8> {
 
     #[cfg(feature = "wasm_near")]
     return NearSha2Impl::new().hash(input);
-
 }
 
 /// Hash function returning a fixed-size array (to save on allocations).
@@ -152,9 +151,7 @@ pub struct NearSha2Impl {
 #[cfg(feature = "wasm_near")]
 impl Sha256Context for NearSha2Impl {
     fn new() -> Self {
-        Self {
-            buffer: Vec::new(),
-        }
+        Self { buffer: Vec::new() }
     }
 
     fn update(&mut self, bytes: &[u8]) {
@@ -180,7 +177,6 @@ impl Sha256 for NearSha2Impl {
         buffer
     }
 }
-
 
 /// Default dynamic implementation that switches between available implementations.
 #[cfg(not(feature = "wasm_near"))]

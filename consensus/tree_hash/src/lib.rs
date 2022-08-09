@@ -7,10 +7,10 @@ pub use merkle_hasher::{Error, MerkleHasher};
 pub use merkleize_padded::merkleize_padded;
 pub use merkleize_standard::merkleize_standard;
 
-#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-use eth2_hashing_wasm::{hash_fixed, hash32_concat, ZERO_HASHES, ZERO_HASHES_MAX_INDEX};
 #[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
-use eth2_hashing::{hash_fixed, hash32_concat, ZERO_HASHES, ZERO_HASHES_MAX_INDEX};
+use eth2_hashing::{hash32_concat, hash_fixed, ZERO_HASHES, ZERO_HASHES_MAX_INDEX};
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+use eth2_hashing_wasm::{hash32_concat, hash_fixed, ZERO_HASHES, ZERO_HASHES_MAX_INDEX};
 
 pub const BYTES_PER_CHUNK: usize = 32;
 pub const HASHSIZE: usize = 32;
