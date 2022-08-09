@@ -7,7 +7,10 @@ pub use merkle_hasher::{Error, MerkleHasher};
 pub use merkleize_padded::merkleize_padded;
 pub use merkleize_standard::merkleize_standard;
 
-use eth2_hashing::{hash_fixed, ZERO_HASHES, ZERO_HASHES_MAX_INDEX};
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+use eth2_hashing_wasm::{hash_fixed, hash32_concat, ZERO_HASHES, ZERO_HASHES_MAX_INDEX};
+#[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
+use eth2_hashing::{hash_fixed, hash32_concat, ZERO_HASHES, ZERO_HASHES_MAX_INDEX};
 
 pub const BYTES_PER_CHUNK: usize = 32;
 pub const HASHSIZE: usize = 32;
@@ -61,7 +64,7 @@ pub fn mix_in_length(root: &Hash256, length: usize) -> Hash256 {
     let mut length_bytes = [0; BYTES_PER_CHUNK];
     length_bytes[0..usize_len].copy_from_slice(&length.to_le_bytes());
 
-    Hash256::from_slice(&eth2_hashing::hash32_concat(root.as_bytes(), &length_bytes)[..])
+    Hash256::from_slice(&hash32_concat(root.as_bytes(), &length_bytes)[..])
 }
 
 /// Returns `Some(root)` created by hashing `root` and `selector`, if `selector <=
@@ -85,7 +88,7 @@ pub fn mix_in_selector(root: &Hash256, selector: u8) -> Option<Hash256> {
     let mut chunk = [0; BYTES_PER_CHUNK];
     chunk[0] = selector;
 
-    let root = eth2_hashing::hash32_concat(root.as_bytes(), &chunk);
+    let root = hash32_concat(root.as_bytes(), &chunk);
     Some(Hash256::from_slice(&root))
 }
 

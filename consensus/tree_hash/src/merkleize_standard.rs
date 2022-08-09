@@ -1,4 +1,7 @@
 use super::*;
+#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
+use eth2_hashing_wasm::hash;
+#[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
 use eth2_hashing::hash;
 
 /// Merkleizes bytes and returns the root, using a simple algorithm that does not optimize to avoid
