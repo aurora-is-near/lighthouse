@@ -1,8 +1,5 @@
 use super::{get_zero_hash, Hash256, BYTES_PER_CHUNK};
-#[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
 use eth2_hashing::{hash32_concat, hash_fixed};
-#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-use eth2_hashing_wasm::{hash32_concat, hash_fixed};
 
 /// Merkleize `bytes` and return the root, optionally padding the tree out to `min_leaves` number of
 /// leaves.

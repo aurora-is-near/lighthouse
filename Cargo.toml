@@ -64,7 +64,6 @@ members = [
 
     "crypto/bls",
     "crypto/eth2_hashing",
-    "crypto/eth2_hashing_wasm",
     "crypto/eth2_key_derivation",
     "crypto/eth2_keystore",
     "crypto/eth2_wallet",

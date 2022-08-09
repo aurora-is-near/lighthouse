@@ -1,7 +1,4 @@
-#[cfg(not(all(target_arch = "wasm32", target_os = "unknown")))]
 use eth2_hashing::{hash, hash32_concat, ZERO_HASHES};
-#[cfg(all(target_arch = "wasm32", target_os = "unknown"))]
-use eth2_hashing_wasm::{hash, hash32_concat, ZERO_HASHES};
 use ethereum_types::H256;
 use lazy_static::lazy_static;
 use safe_arith::ArithError;

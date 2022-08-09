@@ -19,6 +19,6 @@ rustc-hex = "2.1.0"
 wasm-bindgen-test = "0.3.18"
 
 [features]
-default = ["zero_hash_cache", "ring", "sha2"]
+default = ["zero_hash_cache", "detect-cpufeatures", "ring", "sha2"]
 zero_hash_cache = ["lazy_static"]
 detect-cpufeatures = ["cpufeatures"]
