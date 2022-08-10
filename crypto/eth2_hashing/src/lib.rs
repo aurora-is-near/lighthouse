@@ -7,14 +7,8 @@
 //! Now this crate serves primarily as a wrapper over two SHA256 crates: `sha2` and `ring` –
 //! which it switches between at runtime based on the availability of SHA intrinsics.
 
-#[cfg(not(feature = "wasm_near"))]
 pub use self::DynamicContext as Context;
-#[cfg(feature = "wasm_near")]
-pub use self::NearSha2Impl as Context;
-#[cfg(not(feature = "wasm_near"))]
 use sha2::Digest;
-#[cfg(feature = "wasm_near")]
-use near_sdk;
 
 #[cfg(feature = "zero_hash_cache")]
 use lazy_static::lazy_static;
@@ -24,32 +18,19 @@ pub const HASH_LEN: usize = 32;
 
 /// Returns the digest of `input` using the best available implementation.
 pub fn hash(input: &[u8]) -> Vec<u8> {
-    #[cfg(not(feature = "wasm_near"))]
-    return DynamicImpl::best().hash(input);
-
-    #[cfg(feature = "wasm_near")]
-    return NearSha2Impl::new().hash(input);
-
+    DynamicImpl::best().hash(input)
 }
 
 /// Hash function returning a fixed-size array (to save on allocations).
 ///
 /// Uses the best available implementation based on CPU features.
 pub fn hash_fixed(input: &[u8]) -> [u8; HASH_LEN] {
-    #[cfg(not(feature = "wasm_near"))]
-    return DynamicImpl::best().hash_fixed(input);
-
-    #[cfg(feature = "wasm_near")]
-    return NearSha2Impl::new().hash_fixed(input);
+    DynamicImpl::best().hash_fixed(input)
 }
 
 /// Compute the hash of two slices concatenated.
 pub fn hash32_concat(h1: &[u8], h2: &[u8]) -> [u8; 32] {
-    #[cfg(not(feature = "wasm_near"))]
     let mut ctxt = DynamicContext::new();
-    #[cfg(feature = "wasm_near")]
-    let mut ctxt = NearSha2Impl::new();
-
     ctxt.update(h1);
     ctxt.update(h2);
     ctxt.finalize()
@@ -74,10 +55,8 @@ pub trait Sha256 {
 }
 
 /// Implementation of SHA256 using the `sha2` crate (fastest on CPUs with SHA extensions).
-#[cfg(not(feature = "wasm_near"))]
 struct Sha2CrateImpl;
 
-#[cfg(not(feature = "wasm_near"))]
 impl Sha256Context for sha2::Sha256 {
     fn new() -> Self {
         sha2::Digest::new()
@@ -92,7 +71,6 @@ impl Sha256Context for sha2::Sha256 {
     }
 }
 
-#[cfg(not(feature = "wasm_near"))]
 impl Sha256 for Sha2CrateImpl {
     type Context = sha2::Sha256;
 
@@ -106,10 +84,8 @@ impl Sha256 for Sha2CrateImpl {
 }
 
 /// Implementation of SHA256 using the `ring` crate (fastest on CPUs without SHA extensions).
-#[cfg(not(feature = "wasm_near"))]
 pub struct RingImpl;
 
-#[cfg(not(feature = "wasm_near"))]
 impl Sha256Context for ring::digest::Context {
     fn new() -> Self {
         Self::new(&ring::digest::SHA256)
@@ -126,7 +102,6 @@ impl Sha256Context for ring::digest::Context {
     }
 }
 
-#[cfg(not(feature = "wasm_near"))]
 impl Sha256 for RingImpl {
     type Context = ring::digest::Context;
 
@@ -143,47 +118,7 @@ impl Sha256 for RingImpl {
     }
 }
 
-/// Implementation of SHA256 using NEAR host functions (to be used in NEAR smart contracts).
-#[cfg(feature = "wasm_near")]
-pub struct NearSha2Impl {
-    buffer: Vec<u8>,
-}
-
-#[cfg(feature = "wasm_near")]
-impl Sha256Context for NearSha2Impl {
-    fn new() -> Self {
-        Self {
-            buffer: Vec::new(),
-        }
-    }
-
-    fn update(&mut self, bytes: &[u8]) {
-        self.buffer.extend_from_slice(bytes);
-    }
-
-    fn finalize(self) -> [u8; HASH_LEN] {
-        hash_fixed(self.buffer.as_slice())
-    }
-}
-
-#[cfg(feature = "wasm_near")]
-impl Sha256 for NearSha2Impl {
-    type Context = Self;
-
-    fn hash(&self, input: &[u8]) -> Vec<u8> {
-        near_sdk::env::sha256(input)
-    }
-
-    fn hash_fixed(&self, input: &[u8]) -> [u8; HASH_LEN] {
-        let mut buffer = [0u8; HASH_LEN];
-        buffer.copy_from_slice(&near_sdk::env::sha256(input).as_slice());
-        buffer
-    }
-}
-
-
 /// Default dynamic implementation that switches between available implementations.
-#[cfg(not(feature = "wasm_near"))]
 pub enum DynamicImpl {
     Sha2,
     Ring,
@@ -204,7 +139,6 @@ pub fn have_sha_extensions() -> bool {
     return false;
 }
 
-#[cfg(not(feature = "wasm_near"))]
 impl DynamicImpl {
     /// Choose the best available implementation based on the currently executing CPU.
     #[inline(always)]
@@ -217,7 +151,6 @@ impl DynamicImpl {
     }
 }
 
-#[cfg(not(feature = "wasm_near"))]
 impl Sha256 for DynamicImpl {
     type Context = DynamicContext;
 
@@ -241,13 +174,11 @@ impl Sha256 for DynamicImpl {
 /// Context encapsulating all implemenation contexts.
 ///
 /// This enum ends up being 8 bytes larger than the largest inner context.
-#[cfg(not(feature = "wasm_near"))]
 pub enum DynamicContext {
     Sha2(sha2::Sha256),
     Ring(ring::digest::Context),
 }
 
-#[cfg(not(feature = "wasm_near"))]
 impl Sha256Context for DynamicContext {
     fn new() -> Self {
         match DynamicImpl::best() {
