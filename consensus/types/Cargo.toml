@@ -15,7 +15,7 @@ kzg = { workspace = true }
 compare_fields = { workspace = true }
 compare_fields_derive = { workspace = true }
 eth2_interop_keypairs = { path = "../../common/eth2_interop_keypairs" }
-ethereum-types = { workspace = true, features = ["arbitrary"] }
+ethereum-types = { workspace = true, features = ["rlp", "serialize"], default-features = false }
 ethereum_hashing = { workspace = true }
 hex = { workspace = true }
 int_to_bytes = { workspace = true }

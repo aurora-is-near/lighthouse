@@ -108,7 +108,7 @@ dirs = "3"
 discv5 = { git="https://github.com/sigp/discv5", rev="dbb4a718cd32eaed8127c3c8241bfd0fde9eb908", features = ["libp2p"] }
 env_logger = "0.9"
 error-chain = "0.12"
-ethereum-types = "0.14"
+ethereum-types = { version = "0.14", features = ["rlp", "serialize"], default-features = false }
 ethereum_hashing = "1.0.0-beta.2"
 ethereum_serde_utils = "0.5"
 ethereum_ssz = "0.5"
